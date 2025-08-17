@@ -21,11 +21,13 @@ export default function AllStories() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <div className="backdrop-blur-md bg-black/20 shadow-lg">
+        <div className="w-10/12 mx-auto mb-8">
+          <Navbar />
+        </div>
+      </div>
+
       <div className="container w-10/12 mx-auto px-4">
-        <div className="override-navbar mb-8">
-          <Navbar /> 
-        </div>  
-         
         {/* Header Section */}
         <div className="mb-12 text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 rounded-full mb-6 shadow-lg">
@@ -57,12 +59,12 @@ export default function AllStories() {
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                  
+
                   {/* Image Count Badge */}
                   {story.images.length > 1 && (
                     <div className="absolute top-3 right-3 bg-black/70 backdrop-blur-sm text-white px-3 py-1.5 rounded-full text-sm font-medium flex items-center gap-1.5 shadow-lg">
-                      <Image className="w-3.5 h-3.5" />
-                      +{story.images.length - 1} more
+                      <Image className="w-3.5 h-3.5" />+
+                      {story.images.length - 1} more
                     </div>
                   )}
                 </div>
@@ -138,13 +140,20 @@ export default function AllStories() {
               No stories found
             </h3>
             <p className="text-gray-500 text-lg max-w-md mx-auto">
-              There are no stories to display at the moment. Check back later for new content!
+              There are no stories to display at the moment. Check back later
+              for new content!
             </p>
             <div className="mt-8">
               <div className="inline-flex items-center gap-2 text-gray-400">
                 <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-2 h-2 bg-gray-300 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                <div
+                  className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.1s" }}
+                ></div>
+                <div
+                  className="w-2 h-2 bg-gray-300 rounded-full animate-bounce"
+                  style={{ animationDelay: "0.2s" }}
+                ></div>
               </div>
             </div>
           </div>

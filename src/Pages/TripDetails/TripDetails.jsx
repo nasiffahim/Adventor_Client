@@ -11,9 +11,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { AuthContext } from "../../Provider/AuthContext";
 import BookingModal from "./BookingModal";
-import {
-  ArrowRightIcon,
-} from "lucide-react";
+import { ArrowRightIcon } from "lucide-react";
 
 // Import icons (you can replace these with your preferred icon library)
 import {
@@ -111,7 +109,7 @@ export default function TripDetails() {
   };
 
   const handleLogin = () => {
-    navigate('/auth/login');
+    navigate("/auth/login");
   };
 
   const handleInputChange = (e) => {
@@ -220,8 +218,10 @@ export default function TripDetails() {
 
   return (
     <div className="text-gray-800 font-anton bg-gray-50">
-      <div className="max-w-7xl mx-auto override-navbar">
-        <Navbar />
+      <div className="backdrop-blur-md bg-black/20 shadow-lg">
+        <div className="w-10/12 mx-auto">
+          <Navbar />
+        </div>
       </div>
 
       {/* Enhanced Hero Section */}

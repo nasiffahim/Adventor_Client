@@ -81,11 +81,13 @@ export default function AboutDev() {
 
   return (
     <div>
-      <div className="override-navbar w-10/12 mx-auto">
-        <Navbar />
+      <div className="backdrop-blur-md bg-black/20 shadow-lg">
+        <div className="w-10/12 mx-auto mb-8">
+          <Navbar />
+        </div>
       </div>
 
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 px-4 py-8">
+      <div className="min-h-screen px-4">
         <div className="max-w-4xl mx-auto">
           {/* Header Section */}
           <div className="bg-white rounded-2xl shadow-lg p-8 mb-8 border border-gray-100">
