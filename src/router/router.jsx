@@ -28,12 +28,13 @@ import AboutDev from "../Pages/AboutDev/AboutDev";
 import PrivateRoute from "../Provider/PrivateRoute";
 import AdminRoute from "../Provider/AdminRoute";
 import AnnouncementPage from "../Pages/Announcement/AnnouncementCard";
+import ErrorPage from "../Components/ErrorPage/ErrorPage";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <div>Error: Page not found</div>,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "announcements",
         element: <AnnouncementPage />
+      },
+      {
+        path: "*",
+        element: <ErrorPage />,
       }
     ],
   },

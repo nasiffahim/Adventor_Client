@@ -1,10 +1,48 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import { Link, useLoaderData } from "react-router"; // fixed import path
 import Navbar from "../../Components/Navbar/Navbar";
 
 export default function AllTrips() {
   const data = useLoaderData();
+  const [sortBy, setSortBy] = useState("default");
   console.log("packages", data);
+
+  // Sorting functionality
+  const sortedData = useMemo(() => {
+    if (!data) return [];
+    
+    const sortedArray = [...data];
+    
+    switch (sortBy) {
+      case "price-asc":
+        return sortedArray.sort((a, b) => {
+          // Extract numeric value from price string (assuming format like "$299" or "299")
+          const priceA = parseFloat(a.price.toString().replace(/[^0-9.-]+/g, ""));
+          const priceB = parseFloat(b.price.toString().replace(/[^0-9.-]+/g, ""));
+          return priceA - priceB;
+        });
+      
+      case "price-desc":
+        return sortedArray.sort((a, b) => {
+          const priceA = parseFloat(a.price.toString().replace(/[^0-9.-]+/g, ""));
+          const priceB = parseFloat(b.price.toString().replace(/[^0-9.-]+/g, ""));
+          return priceB - priceA;
+        });
+      
+      case "name-asc":
+        return sortedArray.sort((a, b) => 
+          a.packageName.localeCompare(b.packageName)
+        );
+      
+      case "name-desc":
+        return sortedArray.sort((a, b) => 
+          b.packageName.localeCompare(a.packageName)
+        );
+      
+      default:
+        return sortedArray;
+    }
+  }, [data, sortBy]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
@@ -30,13 +68,52 @@ export default function AllTrips() {
         </div>
       </div>
 
+      {/* Sorting Controls */}
+      <div className="max-w-7xl mx-auto px-4 mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-bold text-gray-800">
+              {sortedData.length} Package{sortedData.length !== 1 ? 's' : ''} Available
+            </h2>
+          </div>
+          
+          {/* Sort Dropdown */}
+          <div className="flex items-center gap-3">
+            <label htmlFor="sort-select" className="text-sm font-medium text-gray-600 whitespace-nowrap">
+              Sort by:
+            </label>
+            <div className="relative">
+              <select
+                id="sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="appearance-none bg-white border border-gray-200 rounded-xl px-4 py-3 pr-10 text-sm font-medium text-gray-700 hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all duration-200 shadow-sm min-w-[200px]"
+              >
+                <option value="default">Default Order</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="name-asc">Name: A to Z</option>
+                <option value="name-desc">Name: Z to A</option>
+              </select>
+              
+              {/* Custom dropdown arrow */}
+              <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg className="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l4-4 4 4m0 6l-4 4-4-4" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Packages Grid */}
       <div className="max-w-7xl mx-auto px-4 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {data.map((trip, index) => (
+          {sortedData.map((trip, index) => (
             <div
               key={trip._id}
-              className="group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-500 border border-gray-100 relative backdrop-blur-sm"
+              className="group bg-white rounded-3xl shadow-xl overflow-hidden hover:shadow-2xl hover:scale-105 transition-all duration-500 border border-gray-100 relative backdrop-blur-sm h-full flex flex-col"
               style={{
                 animationDelay: `${index * 100}ms`,
                 animation: "fadeInUp 0.6s ease-out forwards",
@@ -44,7 +121,7 @@ export default function AllTrips() {
               }}
             >
               {/* Card Image */}
-              <div className="relative h-56 w-full overflow-hidden">
+              <div className="relative h-56 w-full overflow-hidden flex-shrink-0">
                 <img
                   src={trip.images?.[0]}
                   alt={trip.packageName}
@@ -105,7 +182,7 @@ export default function AllTrips() {
               </div>
 
               {/* Card Content */}
-              <div className="p-6">
+              <div className="p-6 flex-1 flex flex-col">
                 {/* Package Name with Icon */}
                 <div className="flex items-start mb-4">
                   <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg flex items-center justify-center mr-3 mt-1">
@@ -159,7 +236,7 @@ export default function AllTrips() {
                 </div>
 
                 {/* Additional Info Section */}
-                <div className="grid grid-cols-2 gap-3 mb-5">
+                <div className="grid grid-cols-2 gap-3 mb-5 flex-1">
                   {/* Duration (placeholder - you can add real data) */}
                   <div className="flex items-center p-2 bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg border border-green-100">
                     <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-2">
@@ -210,53 +287,55 @@ export default function AllTrips() {
                 </div>
 
                 {/* Action Button */}
-                <Link to={`/all-trips/${trip._id}`} className="block">
-                  <button className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 text-white py-4 rounded-2xl hover:from-emerald-700 hover:via-teal-700 hover:to-emerald-400 transition-all duration-300 font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 group-hover:scale-105 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
-                    <span className="relative flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 mr-2"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                        />
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                        />
-                      </svg>
-                      View Package Details
-                      <svg
-                        className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </span>
-                  </button>
-                </Link>
+                <div className="mt-auto">
+                  <Link to={`/all-trips/${trip._id}`} className="block">
+                    <button className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 text-white py-4 rounded-2xl hover:from-emerald-700 hover:via-teal-700 hover:to-emerald-400 transition-all duration-300 font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 group-hover:scale-105 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
+                      <span className="relative flex items-center justify-center">
+                        <svg
+                          className="w-5 h-5 mr-2"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                          />
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                          />
+                        </svg>
+                        View Package Details
+                        <svg
+                          className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M9 5l7 7-7 7"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </Link>
+                </div>
               </div>
             </div>
           ))}
         </div>
 
         {/* Empty State */}
-        {data.length === 0 && (
+        {sortedData.length === 0 && (
           <div className="text-center py-16">
             <div className="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
               <svg

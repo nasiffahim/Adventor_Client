@@ -204,12 +204,26 @@ export default function TripDetails() {
 
   if (!trip) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-50">
-        <div className="text-center">
-          <MapPinIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <p className="text-gray-600 font-medium text-lg">Package not found</p>
-        </div>
-      </div>
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-900 to-purple-900 relative overflow-hidden">
+  {/* Background effects */}
+  {/* <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%239C92AC" fill-opacity="0.1"%3E%3Cpath d="m36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div> */}
+  <div className="absolute top-20 left-20 w-72 h-72 bg-purple-500/20 rounded-full blur-xl animate-pulse"></div>
+  
+  <div className="text-center bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl p-8 shadow-xl">
+    <div className="bg-red-500/20 rounded-full p-4 w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+      <MapPinIcon className="h-10 w-10 text-red-400" />
+    </div>
+    <h1 className="text-2xl font-bold text-white mb-2">Package Not Found</h1>
+    <p className="text-gray-300 mb-6">The package you're looking for could not be located.</p>
+    <button 
+      onClick={() => window.location.href = '/'}
+      className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2 rounded-lg transition-colors flex items-center gap-2 mx-auto"
+    >
+      <HomeIcon className="h-4 w-4" />
+      Go Home
+    </button>
+  </div>
+</div>
     );
   }
 
