@@ -49,7 +49,7 @@ const DashboardLayout = () => {
                     {/* Logo Section */}
                     <div className="p-6 bg-gradient-to-r from-primary to-secondary">
                         <Link to="/" className="block text-center">
-                            <span className="text-3xl font-extrabold font-anton bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 bg-clip-text text-transparent h-full">
+                            <span className="text-3xl font-extrabold font-anton bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 bg-clip-text text-transparent h-full">
                                 Adventor.
                             </span>
                         </Link>

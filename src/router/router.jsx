@@ -46,7 +46,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/all-trips/:id",
-        element: <PrivateRoute><TripDetails /></PrivateRoute>,
+        element: <TripDetails />,
         loader: () => fetch("https://tourism-management-system-server-dusky.vercel.app/all-users"),
       },
       {

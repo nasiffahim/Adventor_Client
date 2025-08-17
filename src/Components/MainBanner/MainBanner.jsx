@@ -10,15 +10,6 @@ const rotatingPhrases = [
   "immersive",
 ];
 
-// const videoList = [
-//   "../../../public/clip-2.mp4",
-//   "../../../public/clip-4.mp4",
-//   "../../../public/clip-1.mp4",
-//   "../../../public/clip-3.mp4",
-//   "../../../public/clip-5.mp4",
-//   "../../../public/clip-6.mp4",
-// ];
-
 const videoList = [
   "/clip-2.mp4",
   "/clip-4.mp4",
@@ -27,7 +18,6 @@ const videoList = [
   "/clip-5.mp4",
   "/clip-6.mp4",
 ];
-
 
 export default function MainBanner() {
   const [current, setCurrent] = useState(0);
@@ -86,7 +76,7 @@ export default function MainBanner() {
   }, []);
 
   return (
-    <div className="relative h-[90vh] w-full overflow-hidden">
+    <div className="relative h-[60vh] lg:h-[90vh] w-full overflow-hidden min-w-[350px]">
       <style jsx>{`
         @keyframes springEnter {
           0% {
@@ -132,6 +122,11 @@ export default function MainBanner() {
         .spring-exit {
           animation: springExit 0.3s ease-in forwards;
         }
+
+        .rotating-text {
+          text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+          filter: drop-shadow(0 0 10px rgba(255, 222, 99, 0.3));
+        }
       `}</style>
 
       <video
@@ -160,30 +155,42 @@ export default function MainBanner() {
           <Navbar />
         </div>
 
-        <div className="mt-40 text-center text-white drop-shadow-lg">
-          <div style={{ transform: "rotate(-10deg)" }}>
+        <div className="mt-10 lg:mt-20 text-center text-white drop-shadow-lg px-4 sm:px-0">
+          {/* Rotating text - positioned responsively */}
+          <div className="relative mb-4 sm:mb-0">
             <h2
-              className={`text-5xl text-yellow-300 font-[cursive] mb-4 absolute -top-15 left-120 font-high-empathy ${
-                isAnimating ? "spring-enter" : "spring-exit"
-              }`}
+              className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-yellow-300 font-[cursive] 
+                         transform -rotate-12 sm:-rotate-6 lg:-rotate-12 
+                         font-high-empathy rotating-text
+                         ${isAnimating ? "spring-enter" : "spring-exit"}`}
               style={{
-                textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-                filter: "drop-shadow(0 0 10px rgba(255, 222, 99, 0.3))",
+                position: "relative",
+                top: "30px",
+                right: "30px",
+                display: "inline-block",
+                marginBottom: "1rem",
               }}
             >
               {rotatingPhrases[textIndex]}
             </h2>
           </div>
 
-          <h1 className="text-6xl font-extrabold font-antor hover:text-[#FFDE63]">
-            Explore the Beauty of <br />
-            <span className="text-green-700">
-              Ban<span className="text-red-700">gla</span>desh
+          {/* Main title */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold font-antor hover:text-[#FFDE63] 
+                         leading-tight sm:leading-normal mb-4">
+            Explore the Beauty of <br className="hidden sm:block" />
+            <span className="sm:inline block">
+              <span className="text-green-700">
+                Ban<span className="text-red-700">gla</span>desh
+              </span>
             </span>
           </h1>
-          <p className="mt-4 text-lg hover:text-[#FFDE63] font-lg">
+          
+          {/* Description */}
+          <p className="mt-4 text-sm sm:text-base lg:text-lg hover:text-[#FFDE63] font-lg 
+                        max-w-2xl mx-auto leading-relaxed px-2 sm:px-0">
             Discover Bangladesh like never before — from iconic landmarks to
-            hidden gems. <br />
+            hidden gems. <br className="hidden sm:block" />
             Plan, explore and experience the culture, cuisine, and beauty with
             The Tourist Guide.
           </p>

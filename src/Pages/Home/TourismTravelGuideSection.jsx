@@ -30,7 +30,7 @@ export default function TourismTravelGuideSection() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 text-white">
+      <div className="relative overflow-hidden bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 text-white">
         <div className="absolute inset-0 bg-black opacity-20"></div>
         <div className="relative max-w-6xl mx-auto px-4 py-16 text-center">
           <h2 className="text-5xl font-bold mb-4 bg-gradient-to-r from-yellow-200 to-white bg-clip-text text-transparent">
@@ -51,7 +51,7 @@ export default function TourismTravelGuideSection() {
               onClick={() => setActiveTab(0)}
               className={`flex items-center gap-2 px-8 py-3 rounded-full font-semibold transition-all duration-300 transform ${
                 activeTab === 0
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
+                  ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 text-white shadow-lg scale-105'
                   : 'bg-white/80 text-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:scale-105 shadow-md'
               }`}
             >
@@ -62,7 +62,7 @@ export default function TourismTravelGuideSection() {
               onClick={() => setActiveTab(1)}
               className={`flex items-center gap-2 px-8 py-3 rounded-full font-semibold transition-all duration-300 transform ${
                 activeTab === 1
-                  ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg scale-105'
+                  ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 text-white shadow-lg scale-105'
                   : 'bg-white/80 text-gray-700 hover:bg-blue-50 hover:text-blue-600 hover:scale-105 shadow-md'
               }`}
             >
@@ -110,7 +110,7 @@ export default function TourismTravelGuideSection() {
 
                     <button
                       onClick={() => navigate(`/all-trips/${pkg._id}`)}
-                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 group/btn"
+                      className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 hover:from-emerald-700 hover:via-teal-700 hover:to-emerald-400 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 group/btn"
                     >
                       View Package
                       <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
@@ -162,7 +162,7 @@ export default function TourismTravelGuideSection() {
 
                     <button
                       onClick={() => navigate(`/guide/${guide._id}`)}
-                      className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 group/btn"
+                      className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 hover:from-emerald-700 hover:via-teal-700 hover:to-emerald-400 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 group/btn"
                     >
                       View Profile
                       <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />

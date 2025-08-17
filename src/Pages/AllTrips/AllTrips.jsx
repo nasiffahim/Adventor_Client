@@ -15,14 +15,14 @@ export default function AllTrips() {
       {/* Hero Section */}
       <div className="relative py-16 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-4">
+          <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 bg-clip-text text-transparent mb-4">
             All Tour Packages
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Discover amazing destinations and create unforgettable memories with our curated travel experiences
           </p>
           <div className="mt-8 flex justify-center">
-            <div className="h-1 w-24 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full"></div>
+            <div className="h-1 w-24 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 rounded-full"></div>
           </div>
         </div>
       </div>
@@ -140,7 +140,7 @@ export default function AllTrips() {
 
                 {/* Action Button */}
                 <Link to={`/all-trips/${trip._id}`} className="block">
-                  <button className="w-full bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 text-white py-4 rounded-2xl hover:from-blue-700 hover:via-purple-700 hover:to-indigo-700 transition-all duration-300 font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 group-hover:scale-105 relative overflow-hidden">
+                  <button className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 text-white py-4 rounded-2xl hover:from-emerald-700 hover:via-teal-700 hover:to-emerald-400 transition-all duration-300 font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-1 group-hover:scale-105 relative overflow-hidden">
                     <div className="absolute inset-0 bg-white opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
                     <span className="relative flex items-center justify-center">
                       <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -59,7 +59,7 @@ export default function AboutDev() {
       { name: "GitHub", url: "https://github.com/nasiffahim", icon: Github },
       {
         name: "Portfolio",
-        url: "https://yourportfolio.com",
+        url: "https://denofnasifdev.vercel.app/",
         icon: ExternalLink,
       },
       { name: "Email", url: "mailto:nasif.wasek@gmail.com", icon: Mail },

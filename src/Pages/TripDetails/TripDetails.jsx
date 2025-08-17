@@ -1,23 +1,31 @@
 import axios from "axios";
 import { useEffect, useState, use } from "react";
-import { useLoaderData, useParams, useNavigate } from "react-router";
+import {
+  useLoaderData,
+  useParams,
+  useNavigate,
+  useLocation,
+} from "react-router";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { AuthContext } from "../../Provider/AuthContext";
 import BookingModal from "./BookingModal";
+import {
+  ArrowRightIcon,
+} from "lucide-react";
 
 // Import icons (you can replace these with your preferred icon library)
-import { 
-  CalendarIcon, 
-  UserIcon, 
-  EnvelopeIcon, 
+import {
+  CalendarIcon,
+  UserIcon,
+  EnvelopeIcon,
   CurrencyDollarIcon,
   PhotoIcon,
   MapPinIcon,
   ClockIcon,
   StarIcon,
-  CheckCircleIcon
+  CheckCircleIcon,
 } from "@heroicons/react/24/outline";
 
 export default function TripDetails() {
@@ -30,52 +38,70 @@ export default function TripDetails() {
   const [confirmedBooking, setConfirmedBooking] = useState(null);
   const allUsers = useLoaderData();
   const navigate = useNavigate();
-  
+  const location = useLocation();
+  // Parse URL parameters
+  const urlParams = new URLSearchParams(location.search);
+  const discountedPrice = urlParams.get("discountedPrice");
+  const discount = urlParams.get("discount");
+  const isSpecialOffer = urlParams.get("isSpecialOffer");
+
   // Get current user from Firebase Auth Context
   const { user } = use(AuthContext);
 
   // Booking form state
   const [bookingData, setBookingData] = useState({
-    packageName: '',
-    touristName: user?.displayName || '',
-    touristEmail: user?.email || '',
-    touristImage: user?.photoURL || '',
-    price: '',
+    packageName: "",
+    touristName: user?.displayName || "",
+    touristEmail: user?.email || "",
+    touristImage: user?.photoURL || "",
+    price: "",
     tourDate: null,
-    selectedGuide: null
+    selectedGuide: null,
   });
 
   // Filter tour guides from all users
-  const tourGuides = allUsers?.filter(user => user.role === 'tour-guide') || [];
+  const tourGuides =
+    allUsers?.filter((user) => user.role === "tour-guide") || [];
 
   useEffect(() => {
+    // Parse URL parameters
+    const urlParams = new URLSearchParams(location.search);
+    const discountedPrice = urlParams.get("discountedPrice");
+    const isSpecialOffer = urlParams.get("isSpecialOffer");
+
     axios
-      .get(`https://tourism-management-system-server-dusky.vercel.app/packages/${id}`)
+      .get(
+        `https://tourism-management-system-server-dusky.vercel.app/packages/${id}`
+      )
       .then((response) => {
         setTrip(response.data);
         setLoading(false);
-        
+
         // Set package name and price in booking form
-        setBookingData(prev => ({
+        setBookingData((prev) => ({
           ...prev,
           packageName: response.data.location,
-          price: response.data.price || ''
+          // Use discounted price if coming from special offer, otherwise original price
+          price:
+            isSpecialOffer === "true"
+              ? discountedPrice
+              : response.data.price || "",
         }));
       })
       .catch((error) => {
         console.error("Error fetching package:", error);
         setLoading(false);
       });
-  }, [id]);
+  }, [id, location.search]); // Add location.search to dependencies
 
   // Update booking data when user data changes
   useEffect(() => {
     if (user) {
-      setBookingData(prev => ({
+      setBookingData((prev) => ({
         ...prev,
-        touristName: user.displayName || '',
-        touristEmail: user.email || '',
-        touristImage: user.photoURL || ''
+        touristName: user.displayName || "",
+        touristEmail: user.email || "",
+        touristImage: user.photoURL || "",
       }));
     }
   }, [user]);
@@ -84,53 +110,57 @@ export default function TripDetails() {
     navigate(`/guide/${guideId}`);
   };
 
+  const handleLogin = () => {
+    navigate('/auth/login');
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    
-    if (name === 'selectedGuide') {
+
+    if (name === "selectedGuide") {
       // Find the selected guide object
-      const selectedGuide = tourGuides.find(guide => guide._id === value);
-      setBookingData(prev => ({
+      const selectedGuide = tourGuides.find((guide) => guide._id === value);
+      setBookingData((prev) => ({
         ...prev,
-        selectedGuide: selectedGuide || null
+        selectedGuide: selectedGuide || null,
       }));
     } else {
-      setBookingData(prev => ({
+      setBookingData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
 
   const handleDateChange = (date) => {
-    setBookingData(prev => ({
+    setBookingData((prev) => ({
       ...prev,
-      tourDate: date
+      tourDate: date,
     }));
   };
 
   const handleBookNow = (e) => {
     e.preventDefault();
-    
+
     // Validation
     if (!bookingData.tourDate) {
-      alert('Please select a tour date');
+      alert("Please select a tour date");
       return;
     }
-    
+
     if (!bookingData.selectedGuide) {
-      alert('Please select a tour guide');
+      alert("Please select a tour guide");
       return;
     }
 
     if (!bookingData.price) {
-      alert('Please enter the price');
+      alert("Please enter the price");
       return;
     }
 
     // Check if user is authenticated
     if (!user) {
-      alert('Please log in to make a booking');
+      alert("Please log in to make a booking");
       return;
     }
 
@@ -143,12 +173,12 @@ export default function TripDetails() {
     setShowConfirmModal(false);
     setConfirmedBooking(savedBookingData);
     setShowSuccessModal(true);
-    
+
     // Reset form
-    setBookingData(prev => ({
+    setBookingData((prev) => ({
       ...prev,
       tourDate: null,
-      selectedGuide: null
+      selectedGuide: null,
     }));
   };
 
@@ -166,12 +196,14 @@ export default function TripDetails() {
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading amazing destinations...</p>
+          <p className="text-gray-600 font-medium">
+            Loading amazing destinations...
+          </p>
         </div>
       </div>
     );
   }
-  
+
   if (!trip) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
@@ -191,7 +223,7 @@ export default function TripDetails() {
       <div className="max-w-7xl mx-auto override-navbar">
         <Navbar />
       </div>
-      
+
       {/* Enhanced Hero Section */}
       <div className="relative h-[90vh] flex items-center justify-center overflow-hidden">
         <div
@@ -272,7 +304,10 @@ export default function TripDetails() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {images.slice(4).map((img, idx) => (
-                <div key={idx} className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300">
+                <div
+                  key={idx}
+                  className="group relative overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300"
+                >
                   <img
                     src={img}
                     alt={`Extra Tour Image ${idx + 1}`}
@@ -296,18 +331,25 @@ export default function TripDetails() {
             </h2>
             <div className="w-16 h-1 bg-blue-600 mx-auto rounded-full"></div>
           </div>
-          
+
           <div className="space-y-4">
             {trip.tourPlan?.map((day, index) => (
-              <div key={index} className="bg-gray-50 rounded-lg p-6 border-l-4 border-blue-600 hover:shadow-md transition-shadow duration-300">
+              <div
+                key={index}
+                className="bg-gray-50 rounded-lg p-6 border-l-4 border-blue-600 hover:shadow-md transition-shadow duration-300"
+              >
                 <div className="flex items-start space-x-4">
                   <div className="flex-shrink-0">
                     <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                      <span className="text-white font-bold text-sm">{index + 1}</span>
+                      <span className="text-white font-bold text-sm">
+                        {index + 1}
+                      </span>
                     </div>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-lg text-gray-800 mb-2">{day.day}</h3>
+                    <h3 className="font-bold text-lg text-gray-800 mb-2">
+                      {day.day}
+                    </h3>
                     <p className="text-gray-700 leading-relaxed">{day.plan}</p>
                   </div>
                 </div>
@@ -318,23 +360,24 @@ export default function TripDetails() {
       </div>
 
       {/* Enhanced Guide Selection Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-600 py-16">
+      <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 py-16">
         <div className="max-w-6xl mx-auto text-center px-6">
           <UserIcon className="h-12 w-12 mx-auto mb-4 text-white" />
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">
             Choose Your Expert Guide
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Select from our experienced local guides to make your journey unforgettable
+            Select from our experienced local guides to make your journey
+            unforgettable
           </p>
         </div>
       </div>
-      
+
       {/* Enhanced Interactive Marquee Section */}
       <div className="bg-white py-16">
         <div className="marquee-container overflow-hidden px-6 md:px-20">
-          <div 
-            className={`marquee-wrapper ${isPaused ? 'paused' : ''}`}
+          <div
+            className={`marquee-wrapper ${isPaused ? "paused" : ""}`}
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
@@ -344,7 +387,7 @@ export default function TripDetails() {
                 className="flex flex-col items-center flex-shrink-0 cursor-pointer transition-all duration-300 hover:scale-105 mx-8"
                 onClick={() => handleGuideClick(guide._id)}
               >
-                <div className="w-[220px] h-[220px] rounded-full border-4 border-gradient-to-r from-blue-400 to-purple-500 shadow-xl overflow-hidden relative group">
+                <div className="w-[220px] h-[220px] rounded-full border-4 border-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 shadow-xl overflow-hidden relative group">
                   <img
                     src={guide.photo}
                     alt={guide.name}
@@ -354,7 +397,10 @@ export default function TripDetails() {
                     <div className="text-center">
                       <div className="flex justify-center mb-2">
                         {[...Array(5)].map((_, i) => (
-                          <StarIcon key={i} className="h-4 w-4 text-yellow-400 fill-current" />
+                          <StarIcon
+                            key={i}
+                            className="h-4 w-4 text-yellow-400 fill-current"
+                          />
                         ))}
                       </div>
                       <span className="text-white font-medium text-sm">
@@ -375,171 +421,234 @@ export default function TripDetails() {
         </div>
       </div>
 
-      {/* Enhanced Booking Form Section */}
-      <div className="bg-gradient-to-br from-gray-50 to-blue-50 py-20 px-6 md:px-20">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <CheckCircleIcon className="h-12 w-12 mx-auto mb-4 text-blue-600" />
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-              Book Your Adventure
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Complete the form below to secure your spot on this incredible journey
-            </p>
-            <div className="w-16 h-1 bg-blue-600 mx-auto mt-6 rounded-full"></div>
-          </div>
-          
-          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
-            <form onSubmit={handleBookNow} className="space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                {/* Package Name */}
-                <div className="space-y-2">
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
-                    <MapPinIcon className="h-5 w-5 mr-2 text-blue-600" />
-                    Package Name
-                  </label>
-                  <input
-                    type="text"
-                    name="packageName"
-                    value={bookingData.packageName}
-                    readOnly
-                    className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
-                  />
+      <>
+        {user ? (
+          <>
+            {/* Enhanced Booking Form Section */}
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 py-20 px-6 md:px-20">
+              <div className="max-w-4xl mx-auto">
+                <div className="text-center mb-12">
+                  <CheckCircleIcon className="h-12 w-12 mx-auto mb-4 text-blue-600" />
+                  <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+                    Book Your Adventure
+                  </h2>
+                  <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Complete the form below to secure your spot on this
+                    incredible journey
+                  </p>
+                  <div className="w-16 h-1 bg-blue-600 mx-auto mt-6 rounded-full"></div>
                 </div>
 
-                {/* Tourist Name */}
-                <div className="space-y-2">
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
-                    <UserIcon className="h-5 w-5 mr-2 text-blue-600" />
-                    Tourist Name
-                  </label>
-                  <input
-                    type="text"
-                    name="touristName"
-                    value={bookingData.touristName}
-                    readOnly
-                    className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
-                  />
-                </div>
+                {isSpecialOffer === "true" && (
+                  <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4 text-center">
+                    🎉 Special Offer Applied! You're saving {discount} on this
+                    package!
+                  </div>
+                )}
 
-                {/* Tourist Email */}
-                <div className="space-y-2">
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
-                    <EnvelopeIcon className="h-5 w-5 mr-2 text-blue-600" />
-                    Tourist Email
-                  </label>
-                  <input
-                    type="email"
-                    name="touristEmail"
-                    value={bookingData.touristEmail}
-                    readOnly
-                    className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
-                  />
-                </div>
-
-                {/* Price */}
-                <div className="space-y-2">
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
-                    <CurrencyDollarIcon className="h-5 w-5 mr-2 text-blue-600" />
-                    Price
-                  </label>
-                  <input
-                    type="text"
-                    name="price"
-                    value={bookingData.price}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
-                    placeholder="Enter price"
-                    required
-                  />
-                </div>
-
-                {/* Tour Date */}
-                <div className="space-y-2">
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
-                    <CalendarIcon className="h-5 w-5 mr-2 text-blue-600" />
-                    Tour Date
-                  </label>
-                  <DatePicker
-                    selected={bookingData.tourDate}
-                    onChange={handleDateChange}
-                    minDate={new Date()}
-                    dateFormat="MMMM d, yyyy"
-                    className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
-                    placeholderText="Select tour date"
-                    required
-                  />
-                </div>
-
-                {/* Tour Guide Selection */}
-                <div className="space-y-2">
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
-                    <UserIcon className="h-5 w-5 mr-2 text-blue-600" />
-                    Tour Guide
-                  </label>
-                  <select
-                    name="selectedGuide"
-                    value={bookingData.selectedGuide?._id || ''}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
-                    required
-                  >
-                    <option value="">Select a tour guide</option>
-                    {tourGuides.map((guide) => (
-                      <option key={guide._id} value={guide._id}>
-                        {guide.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Tourist Image */}
-                <div className="md:col-span-2 space-y-2">
-                  <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
-                    <PhotoIcon className="h-5 w-5 mr-2 text-blue-600" />
-                    Tourist Image
-                  </label>
-                  <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-                    <input
-                      type="text"
-                      name="touristImage"
-                      value={bookingData.touristImage}
-                      readOnly
-                      className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg bg-white text-gray-600 cursor-not-allowed font-medium"
-                    />
-                    {bookingData.touristImage && (
-                      <div className="flex-shrink-0">
-                        <img
-                          src={bookingData.touristImage}
-                          alt="Tourist"
-                          className="w-16 h-16 rounded-full object-cover border-4 border-blue-200 shadow-md"
+                <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12">
+                  <form onSubmit={handleBookNow} className="space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      {/* Package Name */}
+                      <div className="space-y-2">
+                        <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
+                          <MapPinIcon className="h-5 w-5 mr-2 text-blue-600" />
+                          Package Name
+                        </label>
+                        <input
+                          type="text"
+                          name="packageName"
+                          value={bookingData.packageName}
+                          readOnly
+                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
                         />
                       </div>
-                    )}
-                  </div>
+
+                      {/* Tourist Name */}
+                      <div className="space-y-2">
+                        <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
+                          <UserIcon className="h-5 w-5 mr-2 text-blue-600" />
+                          Tourist Name
+                        </label>
+                        <input
+                          type="text"
+                          name="touristName"
+                          value={bookingData.touristName}
+                          readOnly
+                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
+                        />
+                      </div>
+
+                      {/* Tourist Email */}
+                      <div className="space-y-2">
+                        <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
+                          <EnvelopeIcon className="h-5 w-5 mr-2 text-blue-600" />
+                          Tourist Email
+                        </label>
+                        <input
+                          type="email"
+                          name="touristEmail"
+                          value={bookingData.touristEmail}
+                          readOnly
+                          className="w-full px-4 py-4 border-2 border-gray-200 rounded-xl bg-gray-50 text-gray-600 cursor-not-allowed font-medium"
+                        />
+                      </div>
+
+                      {/* Price */}
+                      <div className="space-y-2">
+                        <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
+                          <CurrencyDollarIcon className="h-5 w-5 mr-2 text-blue-600" />
+                          Price
+                        </label>
+                        <input
+                          type="text"
+                          name="price"
+                          value={bookingData.price}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
+                          placeholder="Enter price"
+                          required
+                        />
+                      </div>
+
+                      {/* Tour Date */}
+                      <div className="space-y-2">
+                        <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
+                          <CalendarIcon className="h-5 w-5 mr-2 text-blue-600" />
+                          Tour Date
+                        </label>
+                        <DatePicker
+                          selected={bookingData.tourDate}
+                          onChange={handleDateChange}
+                          minDate={new Date()}
+                          dateFormat="MMMM d, yyyy"
+                          className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
+                          placeholderText="Select tour date"
+                          required
+                        />
+                      </div>
+
+                      {/* Tour Guide Selection */}
+                      <div className="space-y-2">
+                        <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
+                          <UserIcon className="h-5 w-5 mr-2 text-blue-600" />
+                          Tour Guide
+                        </label>
+                        <select
+                          name="selectedGuide"
+                          value={bookingData.selectedGuide?._id || ""}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 font-medium"
+                          required
+                        >
+                          <option value="">Select a tour guide</option>
+                          {tourGuides.map((guide) => (
+                            <option key={guide._id} value={guide._id}>
+                              {guide.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Tourist Image */}
+                      <div className="md:col-span-2 space-y-2">
+                        <label className="flex items-center text-sm font-semibold text-gray-700 mb-3">
+                          <PhotoIcon className="h-5 w-5 mr-2 text-blue-600" />
+                          Tourist Image
+                        </label>
+                        <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+                          <input
+                            type="text"
+                            name="touristImage"
+                            value={bookingData.touristImage}
+                            readOnly
+                            className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg bg-white text-gray-600 cursor-not-allowed font-medium"
+                          />
+                          {bookingData.touristImage && (
+                            <div className="flex-shrink-0">
+                              <img
+                                src={bookingData.touristImage}
+                                alt="Tourist"
+                                className="w-16 h-16 rounded-full object-cover border-4 border-blue-200 shadow-md"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Enhanced Book Now Button */}
+                    <div className="text-center pt-8">
+                      <button
+                        type="submit"
+                        className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 hover:from-emerald-700 hover:via-teal-700 hover:to-emerald-400 text-white font-bold py-5 px-16 rounded-xl text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
+                      >
+                        <span className="flex items-center justify-center">
+                          <CheckCircleIcon className="h-6 w-6 mr-3" />
+                          Book Now
+                        </span>
+                      </button>
+                      <p className="text-sm text-gray-500 mt-4">
+                        Secure booking • Instant confirmation • 24/7 support
+                      </p>
+                    </div>
+                  </form>
                 </div>
               </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="bg-gradient-to-br from-gray-50 to-blue-50 py-20 px-6 md:px-20 min-h-screen flex items-center justify-center">
+              <div className="max-w-md mx-auto">
+                <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 text-center">
+                  {/* Heading */}
+                  <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
+                    Authentication Required
+                  </h2>
 
-              {/* Enhanced Book Now Button */}
-              <div className="text-center pt-8">
-                <button
-                  type="submit"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-5 px-16 rounded-xl text-lg transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:scale-105 hover:-translate-y-1"
-                >
-                  <span className="flex items-center justify-center">
-                    <CheckCircleIcon className="h-6 w-6 mr-3" />
-                    Book Now
-                  </span>
-                </button>
-                <p className="text-sm text-gray-500 mt-4">
-                  Secure booking • Instant confirmation • 24/7 support
-                </p>
+                  {/* Message */}
+                  <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                    Please login to book this amazing trip and start your
+                    adventure!
+                  </p>
+
+                  {/* Decorative Line */}
+                  <div className="w-16 h-1 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 mx-auto mb-8 rounded-full"></div>
+
+                  {/* Features List */}
+                  <div className="space-y-3 mb-8 text-left">
+                    <div className="flex items-center text-gray-600">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
+                      <span className="text-sm">Secure booking process</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                      <span className="text-sm">Instant confirmation</span>
+                    </div>
+                    <div className="flex items-center text-gray-600">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
+                      <span className="text-sm">24/7 customer support</span>
+                    </div>
+                  </div>
+
+                  {/* Login Button */}
+                  <button
+                    onClick={handleLogin}
+                    className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 hover:from-emerald-700 hover:via-teal-700 hover:to-emerald-400 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1 group"
+                  >
+                    <span className="flex items-center justify-center">
+                      <UserIcon className="h-6 w-6 mr-3 group-hover:animate-pulse" />
+                      Login to Continue
+                      <ArrowRightIcon className="h-5 w-5 ml-3 group-hover:translate-x-1 transition-transform duration-300" />
+                    </span>
+                  </button>
+                </div>
               </div>
-            </form>
-          </div>
-        </div>
-      </div>
+            </div>
+          </>
+        )}
+      </>
 
       {/* Booking Confirmation Modal */}
       <BookingModal
@@ -555,11 +664,11 @@ export default function TripDetails() {
           display: flex;
           animation: marquee 30s linear infinite;
         }
-        
+
         .marquee-wrapper.paused {
           animation-play-state: paused;
         }
-        
+
         @keyframes marquee {
           0% {
             transform: translateX(0);
@@ -568,7 +677,7 @@ export default function TripDetails() {
             transform: translateX(-50%);
           }
         }
-        
+
         .marquee-container {
           white-space: nowrap;
         }

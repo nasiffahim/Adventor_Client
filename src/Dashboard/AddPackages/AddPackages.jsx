@@ -96,10 +96,10 @@ export default function AddPackageForm() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 rounded-full mb-4">
             <Package className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 bg-clip-text text-transparent mb-2">
             Create New Tour Package
           </h1>
           <p className="text-gray-600 text-lg">Design amazing travel experiences for your customers</p>
@@ -107,7 +107,7 @@ export default function AddPackageForm() {
 
         {/* Main Form */}
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-          <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6">
+          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 p-6">
             <h2 className="text-2xl font-bold text-white flex items-center gap-3">
               <FileText className="w-6 h-6" />
               Package Details
@@ -184,7 +184,7 @@ export default function AddPackageForm() {
                   />
                   <label
                     htmlFor="image-upload"
-                    className="cursor-pointer inline-flex items-center gap-2 bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-purple-700"
+                    className="cursor-pointer inline-flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emrald-700 transition-colors duration-200"
                   >
                     <Camera className="w-4 h-4" />
                     Choose Images
@@ -306,7 +306,7 @@ export default function AddPackageForm() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
+                className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 text-white px-8 py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-3"
               >
                 {uploading ? (
                   <>

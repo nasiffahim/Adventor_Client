@@ -63,7 +63,7 @@ export default function AddStories() {
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent mb-3">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 bg-clip-text text-transparent mb-3">
             Share Your Story
           </h1>
           <p className="text-gray-600 text-lg">
@@ -73,7 +73,7 @@ export default function AddStories() {
 
         {/* Main Form Container */}
         <div className="bg-white/80 backdrop-blur-sm shadow-2xl rounded-2xl border border-white/50 overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-6">
+          <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 p-6">
             <h2 className="text-2xl font-bold text-white flex items-center">
               <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
@@ -183,7 +183,7 @@ export default function AddStories() {
               <button
                 type="submit"
                 disabled={uploading}
-                className="relative px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center"
+                className="relative px-8 py-4 bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-300 hover:from-emerald-600 hover:via-teal-600 hover:to-emerald-300 text-white font-bold text-lg rounded-xl shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center"
               >
                 {uploading ? (
                   <>
